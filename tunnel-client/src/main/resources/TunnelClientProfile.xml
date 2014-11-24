@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profile id="1" name="" desc="client manager 1">
+  <portions>
+     <policy>
+        <locator  name="portion">
+           <locator-alg>
+              <!-- hash, roundrobin, name ,*-->
+              <type>name</type>
+           </locator-alg>
+           <factor-type>
+            <type>java.lang.String</type>
+           </factor-type>
+        </locator>
+	  </policy>
+
+	  <portion id="1" name="portion1">
+	      <policy>
+	        <locator name="tunnel">
+	          <locator-alg>
+                <!-- hash, roundrobin, name ,*-->
+                <type>hash</type>
+              </locator-alg>
+              <factor-type>
+                <type>java.lang.Integer</type>
+              </factor-type>
+	        </locator>
+	         <!-- only support auto -->
+	        <tunnel-degrade>auto</tunnel-degrade>
+	        <!-- auto or fix -->
+	        <tunnel-discover>fix</tunnel-discover>
+	      </policy>
+	      <tunnel-profile>
+	        <policy>
+	          <locator name="channel">
+	            <locator-alg>
+                  <!-- hash, roundrobin, name ,*-->
+                  <type>rr</type>
+                </locator-alg>
+                <factor-type>
+                  <type>java.lang.Integer</type>
+                </factor-type>
+	          </locator>
+	          <flow-control switch="on">
+	             <maxtps>1000</maxtps>
+	          </flow-control>
+	          <!-- on: turn on ssl, off : turn off -->
+	          <security ssl-switch="off">
+	             <ssl>
+	                <keystore></keystore>
+	                <passwd></passwd>
+	             </ssl>
+	          </security>
+	          <!-- intercepter definition, separate with ; -->
+	          <tunnel-intercepter></tunnel-intercepter>
+	          <channel>
+	              <!-- udp or http -->
+	              <type>http</type>
+	              <size>10</size>
+	              <workthread>5</workthread>
+	              <!-- true or false -->
+	              <keepalive>true</keepalive>
+	              <!-- nio or bio(blocking io) -->
+	              <blocking>nio</blocking>
+	              <connection-timeout>60000</connection-timeout>
+	              <socket-timeout>60000</socket-timeout>
+	              <!-- message call mode, sync call or async call -->
+	              <msg-mode>sync</msg-mode>
+	              <!-- intercepter definition -->
+	              <channel-intercepter>
+	                  <intercepter class="com.ehensin.tunnel.client.log.ChannelLogIntercepter">
+	                    <param name="logdir" value="/ehensin/data/channel/log/"/>
+	                    <param name="rolltype" value="fixsize"/>
+	                    <param name="filesize" value="-1"/>
+	                  </intercepter>
+	               </channel-intercepter>
+	          </channel>
+	        </policy>
+	      </tunnel-profile>
+	      <!-- tunnel discover = fix -->
+	      <tunnel-list>
+	        <!-- <tunnel id="11" name="tunnel1">
+	          <ip>10.1.7.136</ip>
+	          <port>9080</port>
+	        </tunnel> -->
+	        <tunnel id="12" name="tunnel2">
+	          <ip>127.0.0.1</ip>
+	          <port>9999</port>
+	        </tunnel>
+	      </tunnel-list>
+	  </portion>
+  </portions>
+  <cache switch="on">
+      <writer impl="com.ehensin.tunnel.client.cache.DataFileWriteCache">
+            <param name="rolltype" value="fixsize"/>      
+            <param name="dir" value="/ehensin/data/cache/request"/>
+            <param name="ext" value="sync"/>        
+            <param name="filesize" value="-1"/>
+            <param name="backup" value="/ehensin/data/cache/request/backup"/>
+            <param name="error" value="/ehensin/data/cache/request/error"/>
+       </writer>
+      <reader impl="com.ehensin.tunnel.client.cache.DataFileReadCache">
+            <param name="scandir" value="/ehensin/data/cache/request"/>
+            <param name="ext" value="sync"/>    
+            <param name="readthreadsize" value="1"/>                     
+            <param name="backup" value="/ehensin/data/cache/request/sended"/>
+      </reader>
+   </cache>
+</profile>

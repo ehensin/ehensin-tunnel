@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug='false'>
+    <property name="logBase" value="/var/log/ehensin/tunnel/tunnel-server" />
+   <!--  <property name="logBase" value="." /> -->
+    <appender name="FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logBase}/tunnel-server.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+           	<MaxHistory>360</MaxHistory>
+           	<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>5MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+         <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+         </encoder>
+    </appender>
+    
+    <appender name="tunnel-server"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logBase}/tunnel-server.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <MaxHistory>360</MaxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>5MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+         <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+         </encoder>
+    </appender>
+    
+    
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-mm-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+        <!-- appender-ref ref="FILE" /-->
+    </root>
+
+    <logger name="com.ehensin.tunnel.server" level="WARN" additivity="false">  
+       <!-- appender-ref ref="tunnel-server" /-->  
+       <appender-ref ref="STDOUT" />
+    </logger>  
+
+    <logger name="org.apache" level="warn"/>
+    <logger name="org.jboss.netty" level="warn"/>
+
+</configuration>

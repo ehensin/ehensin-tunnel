@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profile id="1" name="bus1" desc="business 1, server 1">
+    <listener clazz='com.ehensin.tunnel.server.listener.netty.NettyServerListener'>
+        <param name="ip" value="127.0.0.1"/>
+        <param name="port" value="9999"/>
+        <param name="maxconnection" value="10"/>
+        <param name="workerthread" value="10"/>
+        
+        <param name="pipeline_factory_class" value="com.ehensin.tunnel.server.listener.netty.http.HttpServerPipelineFactory"/>
+    </listener>
+    <!-- message codec to encode or decode message -->
+    <codecs>
+       <codec msg_format='json' codec_class='com.ehensin.tunnel.server.channel.codec.JsonCodec'></codec>   
+    </codecs>
+    <!-- 隶属的分组，没有portion信息缺省为default分组，允许任何连接 -->
+    <portion id='1' name=''>
+        
+    </portion>
+    <filters>
+        <!-- <filter name='flowcontroller' des='' clazz=''>
+            <param name="" value=" "/>
+        </filter> -->
+    </filters>
+    <!-- 白名单列表，如果存在该列表，将只允许列表中的客户端进行连接 -->
+    <white-list switch="on"> 
+        <white ip='127.0.0.1' />
+    </white-list>
+    <protocol>
+        <rpc>
+            <service-scan>com.ehensin.tunnel.server.service;com.ehensin.tunnel.server.listener.test</service-scan>
+        </rpc>
+        <plaintext>
+            <handle-class>com.ehensin.tunnel.server.service.plaintext.PlainTextService</handle-class>
+        </plaintext>
+    </protocol>
+</profile>
