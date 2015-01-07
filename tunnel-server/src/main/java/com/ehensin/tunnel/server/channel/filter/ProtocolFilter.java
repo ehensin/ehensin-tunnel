@@ -15,6 +15,8 @@
  */
 package com.ehensin.tunnel.server.channel.filter;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,15 +88,24 @@ class ProtocolFilter implements IChannelFilter{
 				response.setBody(rep);
 				if( invoker != null ){
 					try {
+						long start = System.currentTimeMillis();
 						String result = invoker.invoke(rpc.getServiceFunc(), rpc.getParams());
+						long end = System.currentTimeMillis();
+						if( logger.isDebugEnabled() ){
+							logger.debug("call method : {} , span : {} ", rpc.getServiceFunc(), (end-start) );
+						}
 				    	rep.setSrcMsgId(msg.getMsgHeader().getMsgId());
 				    	rep.setStatusCode(StatusCode.RPC_CALL_SUCCESS);
 						rep.setResult(result);
 					} catch (Exception e) {
+						logger.error("invoke error : ", e.getCause());
 						rep.setSrcMsgId(msg.getMsgHeader().getMsgId());
 				    	rep.setStatusCode(StatusCode.RPC_CALL_FAILED);
 				    	rep.setErrorCode(ErrorCodeEnum.RpcInvokeError.getCode());
-				    	rep.setException(e.getMessage());
+				    	if( e instanceof InvocationTargetException ){
+				    		rep.setException((((InvocationTargetException) e).getTargetException()).getMessage());
+				    	}else
+				    	    rep.setException(e.getMessage());
 					}
 				}else{
 					/*write exception to client by channel*/

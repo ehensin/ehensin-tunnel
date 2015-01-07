@@ -4,7 +4,13 @@
 	<groupId>com.ehensin.tunnel.server</groupId>
 	<packaging>jar</packaging>
 	<version>1.0.0</version>
-
+    <artifactId>tunnel-server</artifactId>
+	<name>tunnel-server</name>
+	<parent>
+		<groupId>com.ehensin.tunnel</groupId>
+	    <artifactId>ehensin-tunnel</artifactId>
+		<version>1.0.0</version>
+	</parent>
 	<properties>
 		
         <maven.test.skip>true</maven.test.skip>
@@ -98,11 +104,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	<artifactId>ehensin.tunnel.server</artifactId>
-	<name>tunnel-server</name>
-	<parent>
-	    <artifactId>ehensin.tunnel</artifactId>
-		<groupId>com.ehensin.tunnel</groupId>
-		<version>1.0.0</version>
-	</parent>
+	
 </project>

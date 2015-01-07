@@ -16,6 +16,8 @@
 package com.ehensin.tunnel.server;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -31,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ehensin.tunnel.server.listener.IServerListener;
-import com.ehensin.tunnel.server.listener.WhiteListController;
 import com.ehensin.tunnel.server.profile.ListenerProfile;
 import com.ehensin.tunnel.server.profile.Param;
 import com.ehensin.tunnel.server.profile.ServerProfile;
@@ -46,8 +47,21 @@ public class ServerStartup {
     private ServerStartup(){
     	/**/
     }
-    public void start(){
-    	profile = loadProfile(defaultProfileLocation, null);
+    public void start(String profileLocation, Map<String, String> initParam){
+    	if( profileLocation == null ){
+    		InputStream in = ServerStartup.class.getResourceAsStream(defaultProfileLocation);
+    	    profile = loadProfile(in, initParam);
+    	}else {
+    		InputStream in;
+			try {
+				in = new FileInputStream(profileLocation);
+				profile =  loadProfile(in, initParam);
+			} catch (FileNotFoundException e) {
+				logger.error("cannot load profile", e);
+	    		System.exit(1);
+			}
+    		
+    	}
     	/*init listener*/
     	ListenerProfile lp = profile.getListener();
     	if( lp == null || lp.getClazz() == null || lp.getClazz().trim().isEmpty() ){
@@ -81,9 +95,8 @@ public class ServerStartup {
     	return this.profile;
     }
 
-	private ServerProfile loadProfile(String xmlLocation, Map<String, String> initParam){
-		try {
-			InputStream in = ServerStartup.class.getResourceAsStream(xmlLocation);
+	private ServerProfile loadProfile(InputStream in, Map<String, String> initParam){
+		try {			
 			String xml = inputStreamTOString(in);
 			StringBuffer sb = new StringBuffer();
 			if( initParam != null && initParam.size() > 0){
@@ -105,7 +118,7 @@ public class ServerStartup {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			return (ServerProfile)unmarshaller.unmarshal(new StringReader(sb.toString()));
 		} catch (Exception e) {
-			throw new IllegalArgumentException("cannot load profile : " + xmlLocation + ", please check profile file", e);
+			throw new IllegalArgumentException("cannot load profile, please check profile file", e);
 		}
 	}
 	private String inputStreamTOString(InputStream in) throws Exception {
@@ -123,6 +136,6 @@ public class ServerStartup {
 	
 	
 	public static void main(String[] args){
-    	ServerStartup.getStartup().start();	
+    	ServerStartup.getStartup().start(null, null);	
     }
 }

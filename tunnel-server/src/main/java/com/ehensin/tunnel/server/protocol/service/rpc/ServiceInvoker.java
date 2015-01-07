@@ -20,12 +20,16 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ehensin.tunnel.server.ErrorCodeEnum;
 import com.ehensin.tunnel.server.channel.codec.CodecException;
 import com.ehensin.tunnel.server.protocal.message.MsgProtocol;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ServiceInvoker {
+	private static Logger logger = LoggerFactory.getLogger(ServiceInvoker.class);
 	private String serviceName;
 	private Class<?> serviceClass;
 	private Map<String, Method> methodMap;
@@ -65,6 +69,7 @@ public class ServiceInvoker {
 				try {
 					callParams[i] = mapper.readValue(param, types[i]);
 				}catch (IOException e) {
+					logger.error("cannot parser parameters :{}",param + " " + types[i], e);
 					throw new CodecException("cannot parser parameters", e, ErrorCodeEnum.CodecDecodeError.getCode());
 				}
 			}
@@ -77,7 +82,8 @@ public class ServiceInvoker {
 			try {
 				jsonFormatResult = mapper.writeValueAsString(obj);
 			}catch (IOException e) {
-				throw new CodecException("cannot parser parameters", e, ErrorCodeEnum.CodecDecodeError.getCode());
+				logger.error("cannot serialize return value :{}",obj , e);
+				throw new CodecException("cannot serialize return value: " + obj, e, ErrorCodeEnum.CodecDecodeError.getCode());
 			}
 			return jsonFormatResult;
 		}

@@ -45,7 +45,7 @@
         <!-- appender-ref ref="FILE" /-->
     </root>
 
-    <logger name="com.ehensin.tunnel.client" level="WARN" additivity="false">  
+    <logger name="com.ehensin.tunnel.client" level="DEBUG" additivity="false">  
        <!-- appender-ref ref="tunnel-client" /-->  
        <appender-ref ref="STDOUT" />
     </logger>  

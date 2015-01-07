@@ -65,7 +65,7 @@ public class HttpServerUpstreamHandler extends SimpleChannelUpstreamHandler {
     		}
     		/*sometimes some channel have not been cached on time because of netty nio mechanism*/
     		try {
-				TimeUnit.MICROSECONDS.sleep(10);
+				TimeUnit.MILLISECONDS.sleep(10);
 			} catch (InterruptedException e1) {
 				logger.error("cannot sleep current thread", e1);
 			}

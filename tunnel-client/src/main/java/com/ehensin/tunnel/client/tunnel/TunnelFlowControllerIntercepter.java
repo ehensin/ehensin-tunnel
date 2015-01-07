@@ -27,9 +27,9 @@ public class TunnelFlowControllerIntercepter implements ITunnelIntercepter {
 	private static final Logger logger = LoggerFactory
 			.getLogger(TunnelFlowControllerIntercepter.class);
     private long maxtps;
-    private long averageTps = 0;
-    private long lastCount = 0;
-    private long currentCount = 0;
+    private volatile long averageTps = 0;
+    private volatile long lastCount = 0;
+    private volatile long currentCount = 0;
     private long lastTime = System.currentTimeMillis();
 	public TunnelFlowControllerIntercepter(long maxtps){
 		this.maxtps = maxtps;
@@ -37,9 +37,9 @@ public class TunnelFlowControllerIntercepter implements ITunnelIntercepter {
 	@Override
 	public boolean preInvoke(TunnelRequest req) {
 		long now = System.currentTimeMillis();
-		if( ( now - lastTime ) >= 6000){
+		if( ( now - lastTime ) >= 1000){
 			lastTime = now;
-			averageTps = ( currentCount - lastCount )/ 6 ;
+			averageTps = ( currentCount - lastCount );
 			lastCount = currentCount;
 		}
 		if(averageTps > maxtps){

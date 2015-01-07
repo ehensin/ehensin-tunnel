@@ -74,7 +74,7 @@ public class NettyServerListener implements IServerListener{
 		}
 		/* Configure the server.*/
 		bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(
-				Executors.newCachedThreadPool(), Executors.newFixedThreadPool(workerThread), workerThread));
+				Executors.newCachedThreadPool(), Executors.newCachedThreadPool(), workerThread));
 
 		/*Enable TCP_NODELAY to handle pipelined requests without latency.*/
 		bootstrap.setOption("child.tcpNoDelay", true);

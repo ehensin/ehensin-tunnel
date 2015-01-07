@@ -89,7 +89,7 @@ public class HttpShortChannel extends TCPChannel{
 		}
 		if( !super.isBlocking() )
 		    bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
-				Executors.newFixedThreadPool(super.getChannelConfig().getWorkThreads(),new EhensinThreadFactory(new EhensinThreadGroup("ShortChannel"))),super.getChannelConfig().getWorkThreads()));
+				Executors.newCachedThreadPool(new EhensinThreadFactory(new EhensinThreadGroup("ShortChannel"))),super.getChannelConfig().getWorkThreads()));
 		else
 			bootstrap = new ClientBootstrap(new OioClientSocketChannelFactory(
 					Executors.newFixedThreadPool(super.getChannelConfig().getWorkThreads())));

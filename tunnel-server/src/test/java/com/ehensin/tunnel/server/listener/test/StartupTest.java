@@ -23,7 +23,7 @@ public class StartupTest {
 
 	@Test
 	public void test() {
-		ServerStartup.getStartup().start();
+		ServerStartup.getStartup().start(null, null);
 		try {
 			Thread.currentThread().join();
 		} catch (InterruptedException e) {

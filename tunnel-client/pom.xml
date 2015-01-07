@@ -94,10 +94,10 @@
 			</plugin>
 		</plugins>
 	</build>
-	<artifactId>ehensin.tunnel.client</artifactId>
+	<artifactId>tunnel-client</artifactId>
 	<name>tunnel-client</name>
 	<parent>
-	    <artifactId>ehensin.tunnel</artifactId>
+	    <artifactId>ehensin-tunnel</artifactId>
 		<groupId>com.ehensin.tunnel</groupId>
 		<version>1.0.0</version>
 	</parent>

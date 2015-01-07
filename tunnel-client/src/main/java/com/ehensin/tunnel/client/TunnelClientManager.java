@@ -16,6 +16,7 @@
 package com.ehensin.tunnel.client;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.Map;
@@ -70,6 +71,8 @@ public class TunnelClientManager {
 	private TunnelClientProfile loadProfile(String xmlLocation, Map<String, String> initParam){
 		try {
 			InputStream in = TunnelClientManager.class.getResourceAsStream(xmlLocation);
+			if( in == null )
+				in = new FileInputStream(xmlLocation);
 			String xml = inputStreamTOString(in);
 			StringBuffer sb = new StringBuffer();
 			if( initParam != null && initParam.size() > 0){

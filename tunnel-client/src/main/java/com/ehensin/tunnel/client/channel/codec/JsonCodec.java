@@ -18,14 +18,8 @@ package com.ehensin.tunnel.client.channel.codec;
 import java.io.IOException;
 
 import com.ehensin.tunnel.client.ErrorCodeEnum;
-import com.ehensin.tunnel.client.protocol.MsgHeader;
 import com.ehensin.tunnel.client.protocol.MsgProtocol;
-import com.ehensin.tunnel.client.protocol.MsgRepProtocol;
-import com.ehensin.tunnel.client.test.ResultClass;
-import com.ehensin.tunnel.client.util.UUIDUtil;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonCodec implements ICodec<String>{

@@ -28,6 +28,7 @@ import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
+import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
@@ -115,7 +116,7 @@ public class HttpLongChannel extends TCPChannel{
 		}
 		if( !super.isBlocking() )
 		    bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(),
-				Executors.newFixedThreadPool(super.getChannelConfig().getWorkThreads(), new EhensinThreadFactory(new EhensinThreadGroup("LongChannel"))),super.getChannelConfig().getWorkThreads()));
+		    		Executors.newCachedThreadPool(new EhensinThreadFactory(new EhensinThreadGroup("LongChannel"))),super.getChannelConfig().getWorkThreads()));
 		else
 			bootstrap = new ClientBootstrap(new OioClientSocketChannelFactory(
 					Executors.newFixedThreadPool(super.getChannelConfig().getWorkThreads(), new EhensinThreadFactory(new EhensinThreadGroup("LongChannel")))));
@@ -209,17 +210,26 @@ public class HttpLongChannel extends TCPChannel{
 	
 	private void asyncRequest(HttpRequest req, Channel channel) throws ChannelException{
 		ChannelFuture future = channel.write(req);
-		future.awaitUninterruptibly();
-		if (!future.isSuccess()) {
-			logger.error("cannot send message to remote server", future.getCause());
-			/*for channal close exception, need to set grade to bad*/
-			if(  future.getCause() instanceof java.nio.channels.ClosedChannelException )
-				this.setGrade(GradeEnum.Bad);
-			else
-			    /*down grade*/
-				this.setGrade(this.getGrade().down(this.getGrade()));				
-			throw new ChannelException("http async call failed", future.getCause(),ErrorCodeEnum.TunnelChannelSendFailed.getCode());
-		}
+		//future.awaitUninterruptibly();
+		future.addListener(new ChannelFutureListener(){
+			@Override
+			public void operationComplete(ChannelFuture future)
+					throws Exception {
+				if (!future.isSuccess()) {
+					logger.error("cannot send message to remote server", future.getCause());
+					/*for channal close exception, need to set grade to bad*/
+					if(  future.getCause() instanceof java.nio.channels.ClosedChannelException )
+						HttpLongChannel.this.setGrade(GradeEnum.Bad);
+					else
+					    /*down grade*/
+						HttpLongChannel.this.setGrade(HttpLongChannel.this.getGrade().down(HttpLongChannel.this.getGrade()));				
+					throw new ChannelException("http async call failed", future.getCause(),ErrorCodeEnum.TunnelChannelSendFailed.getCode());
+				}
+			}
+			
+		});
+		
+		
 	}
 	
 	private String syncRequest(HttpRequest req, Channel channel) throws ChannelException {
@@ -234,18 +244,26 @@ public class HttpLongChannel extends TCPChannel{
             this.syncChannel.getPipeline().addLast("synchandler",
     				new ChannelClientHandler(this, new SyncFutureCallBack(result)));
 			ChannelFuture future = channel.write(req);
-			future.awaitUninterruptibly();
-			if (!future.isSuccess()) {
-				logger.error("cannot send message to remote server", future.getCause());
-				/*for channal close exception, need to set grade to bad*/
-				if(  future.getCause() instanceof java.nio.channels.ClosedChannelException )
-					HttpLongChannel.this.setGrade(GradeEnum.Bad);
-				else
-				    /*down grade*/
-					this.setGrade(this.getGrade().down(this.getGrade()));				
+			//future.awaitUninterruptibly();
+			future.addListener(new ChannelFutureListener(){
+				@Override
+				public void operationComplete(ChannelFuture future)
+						throws Exception {
+					if (!future.isSuccess()) {
+						logger.error("cannot send message to remote server", future.getCause());
+						/*for channal close exception, need to set grade to bad*/
+						if(  future.getCause() instanceof java.nio.channels.ClosedChannelException )
+							HttpLongChannel.this.setGrade(GradeEnum.Bad);
+						else
+						    /*down grade*/
+							HttpLongChannel.this.setGrade(HttpLongChannel.this.getGrade().down(HttpLongChannel.this.getGrade()));				
+						
+						throw new ChannelException("http sync call failed", future.getCause(),ErrorCodeEnum.TunnelChannelSendFailed.getCode());
+					}
+				}
 				
-				throw new ChannelException("http sync call failed", future.getCause(),ErrorCodeEnum.TunnelChannelSendFailed.getCode());
-			}
+			});
+			
 			result.waitComplete.await(60, TimeUnit.SECONDS);
 			if( result.getError() != null ){
 				throw result.getError();
@@ -271,9 +289,11 @@ public class HttpLongChannel extends TCPChannel{
 				MsgProtocol msg = ProtocolHelper.getKeepaliveMessage(HttpLongChannel.this.getChannelConfig().getIp());
 		    	
 				if( HttpLongChannel.this.getStatus().getStatus() == ChannelStatus.Normal.getStatus()){
+					long start = System.currentTimeMillis();
 					HttpLongChannel.this.send(msg, true);
+					long end = System.currentTimeMillis();
 					if( logger.isDebugEnabled() )
-						logger.debug("channel ({} {}) send keepalive message.",HttpLongChannel.this.getTunnelId(), HttpLongChannel.this.getId());
+						logger.debug("channel ({}) send keepalive message, span : {} ", HttpLongChannel.this.getId(), end - start );
 
 				}
 				else{

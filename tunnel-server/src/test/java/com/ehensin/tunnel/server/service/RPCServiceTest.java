@@ -25,7 +25,7 @@ import com.ehensin.tunnel.server.protocol.service.rpc.ServiceRegistry;
 public class RPCServiceTest {
    @Before
    public void init(){
-	   ServerStartup.getStartup().start();
+	   ServerStartup.getStartup().start(null, null);
    }
 	@Test
 	public void test() {

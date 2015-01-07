@@ -82,7 +82,7 @@
 	<artifactId>ehensin.tunnel.monitor</artifactId>
 	<name>tunnel-monitor</name>
 	<parent>
-	    <artifactId>ehensin.tunnel</artifactId>
+	    <artifactId>ehensin-tunnel</artifactId>
 		<groupId>com.ehensin.tunnel</groupId>
 		<version>1.0.0</version>
 	</parent>

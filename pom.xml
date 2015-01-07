@@ -4,7 +4,7 @@
 	<groupId>com.ehensin.tunnel</groupId>
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
-	<artifactId>ehensin.tunnel</artifactId>
+	<artifactId>ehensin-tunnel</artifactId>
 	<name>ehensin-tunnel</name>
 	<!-- <parent>
 		<groupId>com.ehensin</groupId>

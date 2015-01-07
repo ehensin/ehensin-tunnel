@@ -17,8 +17,8 @@
 	      <policy>
 	        <locator name="tunnel">
 	          <locator-alg>
-                <!-- hash, roundrobin, name ,*-->
-                <type>hash</type>
+                <!-- hash, rr(roundrobin), name ,*-->
+                <type>rr</type>
               </locator-alg>
               <factor-type>
                 <type>java.lang.Integer</type>
@@ -55,7 +55,7 @@
 	          <channel>
 	              <!-- udp or http -->
 	              <type>http</type>
-	              <size>10</size>
+	              <size>1</size>
 	              <workthread>5</workthread>
 	              <!-- true or false -->
 	              <keepalive>true</keepalive>
@@ -84,7 +84,7 @@
 	        </tunnel> -->
 	        <tunnel id="12" name="tunnel2">
 	          <ip>127.0.0.1</ip>
-	          <port>9999</port>
+	          <port>9998</port>
 	        </tunnel>
 	      </tunnel-list>
 	  </portion>
