@@ -34,37 +34,47 @@ public class AccountServiceClient {
 	}
 
 	@Test
-	public void test() {
+	public void testGetConsumer() {
 		try {
-			CustomerAccountVO result = (CustomerAccountVO)session.syncInvoke("account-service", "getCustomerAccount",new String[]{"123"}, CustomerAccountVO.class);
-			System.out.println("==============" + result.getUuid() + " " + result.getMail() + " " + result.getLoginName() + " " + result.getPhone()
-					+ " " + result.getPassword() + " " +result.getStatus() + " " + result.getBalance1() + " " + result.getBalance2());
+			ConsumerVO result = (ConsumerVO)session.syncInvoke("account-service", "getConsumer",new Object[]{"99de4b41-d656-48f2-871b-d4f4333ef732", Boolean.TRUE}, ConsumerVO.class);
+			System.out.println("==============" + result.getUuid() + " " + result.getMail() + " " + result.getName() + " " + result.getPhone()
+					+ " " + result.getPassword() + " " +result.getStatus() + " " + result.getAccount().getBalance());
 		} catch (SessionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	/*@Test
-	public void testCreate() {
+	@Test
+	public void testGetAccounts() {
 		try {
-			CustomerAccountVO vo = new CustomerAccountVO();
-			vo.setUuid("124");
-			vo.setLoginName("zzd");
+			AccountVO[] results = (AccountVO[])session.syncInvoke("account-service", "getAccounts",new Object[]{"99de4b41-d656-48f2-871b-d4f4333ef732"}, AccountVO[].class);
+			AccountVO result = results[0];
+			System.out.println("==============" + result.getAccountUuid() + " " + result.getAccountName() + " " + result.getBalance());
+		} catch (SessionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	//@Test
+	public void testCreateConsumer() {
+		try {
+			ConsumerVO vo = new ConsumerVO();			
+			vo.setIdentity("22222222211111111111111");
+			vo.setMail("zzd@newcosoft.com1");
 			vo.setPhone("13917310926");
-			vo.setMail("hhbzzd@sina.com");
-			vo.setBalance1(0);
-			vo.setBalance2(0);
-			vo.setStatus(0);
+			vo.setName("zzd");
 			vo.setPassword("123456");
+			vo.setPayPassword("654321");
 
-			Boolean result = (Boolean)session.syncInvoke("account-service", "registerCustomer",new Object[]{vo}, Boolean.class);
+			String result = (String)session.syncInvoke("account-service", "registerConsumer",new Object[]{vo}, String.class);
 			
 			System.out.println("aaaaaaaaaaaaaa==============" + result.toString() );
 		} catch (SessionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}*/
+	}
 
 }

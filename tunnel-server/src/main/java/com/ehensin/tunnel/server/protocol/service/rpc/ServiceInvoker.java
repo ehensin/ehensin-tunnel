@@ -17,7 +17,10 @@ package com.ehensin.tunnel.server.protocol.service.rpc;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -25,8 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import com.ehensin.tunnel.server.ErrorCodeEnum;
 import com.ehensin.tunnel.server.channel.codec.CodecException;
-import com.ehensin.tunnel.server.protocal.message.MsgProtocol;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
 public class ServiceInvoker {
 	private static Logger logger = LoggerFactory.getLogger(ServiceInvoker.class);
@@ -58,8 +62,11 @@ public class ServiceInvoker {
      * */
 	public String invoke(String funcName, String[] params) throws Exception{		
 		Method m = methodMap.get(funcName);
+		if( m == null )
+			throw new Exception("cannot find function with this function name : " + funcName);
+		Type[] types =(Type[]) m.getGenericParameterTypes();
 		/*get method parameters */
-		Class<?>[] types = m.getParameterTypes();
+		//Class<?>[] types = m.getParameterTypes();
 		Object[] callParams = null;
 		if( types != null && params != null && types.length > 0  && types.length == params.length ){
 			callParams = new Object[params.length];
@@ -67,7 +74,17 @@ public class ServiceInvoker {
 				String param = params[i];
 				ObjectMapper mapper = new ObjectMapper();
 				try {
-					callParams[i] = mapper.readValue(param, types[i]);
+					if(types[i] instanceof ParameterizedType){
+						ParameterizedType t = (ParameterizedType)types[i];
+						Type[] ts = t.getActualTypeArguments();
+						Class<?>[] jts = new Class[ts.length];
+						for(int j = 0 ; j < ts.length; j++ ){
+							jts[j] = (Class<?>)ts[j];
+					    }
+						JavaType jt = mapper.getTypeFactory().constructParametricType((Class<?>)t.getRawType(), jts);
+						callParams[i] = mapper.readValue(param, jt);
+					}else										
+					    callParams[i] = mapper.readValue(param, TypeFactory.rawClass(types[i]));
 				}catch (IOException e) {
 					logger.error("cannot parser parameters :{}",param + " " + types[i], e);
 					throw new CodecException("cannot parser parameters", e, ErrorCodeEnum.CodecDecodeError.getCode());
@@ -93,4 +110,8 @@ public class ServiceInvoker {
 	public String getServiceName() {
 		return serviceName;
 	}
+	
+	public JavaType getCollectionType(ObjectMapper mapper, Class<?> collectionClass, Class<?>... elementClasses) {   
+	    return mapper.getTypeFactory().constructParametricType(collectionClass, elementClasses);   
+	} 
 }

@@ -36,7 +36,7 @@ public class OrderServiceClient {
 		
 	}
 
-	@Test
+	//@Test
 	public void test() {
 		try {
 			
@@ -45,7 +45,7 @@ public class OrderServiceClient {
 					"create a new payment order", "http://s", "testing", 1, 
 					null);
 			PaymentOrderItemVO item = new PaymentOrderItemVO("b6b75b0e-ad5b-46f6-a62d-563668ba06fb",
-					"b6b75b0e-ad5b-46f6-a62d-563668ba06fb",1000000l, 1);
+					"b6b75b0e-ad5b-46f6-a62d-563668ba06fb","7ebab613-0d90-4534-a460-b666bfa28e58", 1000000l, 1);
 			List<PaymentOrderItemVO> items = new ArrayList<PaymentOrderItemVO>();
 			items.add(item);
 			vo.setOrderItems(items);
@@ -58,6 +58,15 @@ public class OrderServiceClient {
 			e.printStackTrace();
 		}
 	}
-	
+	@Test
+	 public void testSecurityPayUnPayedOrder() throws Exception {
+		PaymentOrderItemVO item = new PaymentOrderItemVO("4917a00a-0618-4f66-9f51-e681b25f5c65",
+					"be0db185-dd0a-48cd-992a-dfbc1271ed2c","7ebab613-0d90-4534-a460-b666bfa28e58",1000000l, 1);
+	 		 List<PaymentOrderItemVO> items = new ArrayList<PaymentOrderItemVO>();
+	 		 items.add(item);
+	 		
+	 		Boolean result = (Boolean)session.syncInvoke("order-service","securityPayUnPayedOrder", new Object[]{"4917a00a-0618-4f66-9f51-e681b25f5c65", "b949b33e-54bf-449a-b63e-85672b1187e6", items}, Boolean.class);
+			
+		}
 
 }

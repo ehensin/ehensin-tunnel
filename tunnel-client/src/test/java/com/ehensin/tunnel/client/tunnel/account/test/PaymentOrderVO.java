@@ -19,13 +19,13 @@ import java.util.List;
 
 public class PaymentOrderVO {
 	/**
-	 * user uuid
+	 *the payer user uuid
 	 * */
-	private String userUuid;
+	private String payerUuid;
 	/**
-	 * the payee
+	 * the payee user uuid
 	 * */
-	private String payee;
+	private String payeeUuid;
 
     /**
      * payment amount
@@ -70,14 +70,13 @@ public class PaymentOrderVO {
     	
     }
     
-	public PaymentOrderVO(String userUuid, String payee,
+	public PaymentOrderVO(String payerUuid, String payeeUuid,
 			Long amount, String bizNum, Integer bizType,
 			String bizDesc, String bizUrl, String remark, Integer channel, 
 			 List<PaymentOrderItemVO> orderItems) {
-		 
 		super();
-		this.userUuid = userUuid;
-		this.payee = payee;
+		this.payerUuid = payerUuid;
+		this.payeeUuid = payeeUuid;
 		this.amount = amount;
 		this.bizNum = bizNum;
 		this.bizType = bizType;
@@ -88,18 +87,22 @@ public class PaymentOrderVO {
 		this.orderItems = orderItems;
 	}
 
-	public String getUserUuid() {
-		return userUuid;
+	public String getPayerUuid() {
+		return payerUuid;
 	}
-	public void setUserUuid(String userUuid) {
-		this.userUuid = userUuid;
+
+	public void setPayerUuid(String payerUuid) {
+		this.payerUuid = payerUuid;
 	}
-	public String getPayee() {
-		return payee;
+
+	public String getPayeeUuid() {
+		return payeeUuid;
 	}
-	public void setPayee(String payee) {
-		this.payee = payee;
+
+	public void setPayeeUuid(String payeeUuid) {
+		this.payeeUuid = payeeUuid;
 	}
+
 	public Long getAmount() {
 		return amount;
 	}
@@ -157,7 +160,7 @@ public class PaymentOrderVO {
     
     public String toString(){
     	StringBuffer str = new StringBuffer();
-    	str.append(this.userUuid).append(this.payee).append(this.amount).append(this.paymentType)
+    	str.append(this.payerUuid).append(this.payeeUuid).append(this.amount).append(this.paymentType)
     	   .append(this.channel).append(this.bizType).append(this.bizNum);
     	
     	return str.toString();

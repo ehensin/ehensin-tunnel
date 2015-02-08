@@ -23,9 +23,13 @@ public class PaymentOrderItemVO {
 	 * */
 	private String userUuid;
 	/**
-	 * the account uuid
+	 * the payer account uuid
 	 * */
-	private String accountUuid;
+	private String payerAccountUuid;
+	/**
+	 * the payee account uuid
+	 * */
+	private String payeeAccountUuid;
 
     /**
      * payment amount
@@ -39,12 +43,13 @@ public class PaymentOrderItemVO {
     public PaymentOrderItemVO(){
     	
     }
-    
-	public PaymentOrderItemVO(String userUuid,
-			String accountUuid, Long amount, Integer accountType) {
+
+	public PaymentOrderItemVO(String userUuid, String payerAccountUuid,
+			String payeeAccountUuid, long amount, int accountType) {
 		super();
 		this.userUuid = userUuid;
-		this.accountUuid = accountUuid;
+		this.payerAccountUuid = payerAccountUuid;
+		this.payeeAccountUuid = payeeAccountUuid;
 		this.amount = amount;
 		this.accountType = accountType;
 	}
@@ -57,12 +62,20 @@ public class PaymentOrderItemVO {
 		this.userUuid = userUuid;
 	}
 
-	public String getAccountUuid() {
-		return accountUuid;
+	public String getPayerAccountUuid() {
+		return payerAccountUuid;
 	}
 
-	public void setAccountUuid(String accountUuid) {
-		this.accountUuid = accountUuid;
+	public void setPayerAccountUuid(String payerAccountUuid) {
+		this.payerAccountUuid = payerAccountUuid;
+	}
+
+	public String getPayeeAccountUuid() {
+		return payeeAccountUuid;
+	}
+
+	public void setPayeeAccountUuid(String payeeAccountUuid) {
+		this.payeeAccountUuid = payeeAccountUuid;
 	}
 
 	public Long getAmount() {

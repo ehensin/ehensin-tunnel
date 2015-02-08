@@ -15,35 +15,37 @@
  */
 package com.ehensin.tunnel.client.tunnel.account.test;
 
+public class ConsumerVO {
+	/*base consumer info*/
+	private String uuid;
+	private String identity;
+	private String phone;
+	private String name;
+	private String mail;
+	private String password;
+	private String payPassword;
+	private Integer status;
 
-public class CustomerAccountVO {
-    private String uuid;
-    private String phone;
-    private String loginName;
-    private String mail;
-    private String password;
-    private Integer status;
-    /*cash account */
-    private Integer balance1;
-    /*frozen account*/
-    private Integer balance2;
-    
-    public CustomerAccountVO(){
-    	
-    }
-    
-	public CustomerAccountVO(String uuid, String phone, String loginName,
-			String mail, String password, Integer status, Integer balance1,
-			Integer balance2) {
+	
+	/*account info*/
+	AccountVO account;
+	
+	public ConsumerVO() {
+
+	}
+
+	public ConsumerVO(String uuid, String identity,String phone, String name,
+			String mail, String password, Integer status, String payPassword, AccountVO account) {
 		super();
 		this.uuid = uuid;
+		this.identity = identity;
 		this.phone = phone;
-		this.loginName = loginName;
+		this.name = name;
 		this.mail = mail;
 		this.password = password;
 		this.status = status;
-		this.balance1 = balance1;
-		this.balance2 = balance2;
+		this.account = account;
+		this.payPassword = payPassword;
 	}
 
 	public String getUuid() {
@@ -54,6 +56,14 @@ public class CustomerAccountVO {
 		this.uuid = uuid;
 	}
 
+	public String getIdentity() {
+		return identity;
+	}
+
+	public void setIdentity(String identity) {
+		this.identity = identity;
+	}
+
 	public String getPhone() {
 		return phone;
 	}
@@ -62,12 +72,12 @@ public class CustomerAccountVO {
 		this.phone = phone;
 	}
 
-	public String getLoginName() {
-		return loginName;
+	public String getName() {
+		return name;
 	}
 
-	public void setLoginName(String loginName) {
-		this.loginName = loginName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getMail() {
@@ -94,22 +104,23 @@ public class CustomerAccountVO {
 		this.status = status;
 	}
 
-	public Integer getBalance1() {
-		return balance1;
+	public AccountVO getAccount() {
+		return account;
 	}
 
-	public void setBalance1(Integer balance1) {
-		this.balance1 = balance1;
+	public void setAccount(AccountVO account) {
+		this.account = account;
 	}
 
-	public Integer getBalance2() {
-		return balance2;
+	public String getPayPassword() {
+		return payPassword;
 	}
 
-	public void setBalance2(Integer balance2) {
-		this.balance2 = balance2;
+	public void setPayPassword(String payPassword) {
+		this.payPassword = payPassword;
 	}
 
 	
-
+	
+	
 }
